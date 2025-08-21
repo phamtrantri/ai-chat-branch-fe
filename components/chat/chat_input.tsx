@@ -1,6 +1,10 @@
 import { useRef, useState } from "react";
 
-const ChatInput = () => {
+interface IChatInputProps {
+  customClassName?: string;
+}
+
+const ChatInput = ({ customClassName }: IChatInputProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [searchStr, setSearchStr] = useState("");
 
@@ -29,7 +33,9 @@ const ChatInput = () => {
   };
 
   return (
-    <div className="flex w-3/4 sm:w-1/2 border-1 border-default-300 rounded-3xl p-3 bg-white">
+    <div
+      className={`flex w-full border-1 border-default-300 rounded-3xl p-3 bg-white ${customClassName}`}
+    >
       <textarea
         ref={textareaRef}
         className="w-full focus:outline-none resize-none min-h-[48px] max-h-[200px] overflow-y-auto"

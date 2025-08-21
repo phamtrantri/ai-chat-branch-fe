@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { CiChat2, CiSearch } from "react-icons/ci";
+import Image from "next/image";
+import Link from "next/link";
 
 const Menu = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -26,7 +29,16 @@ const Menu = () => {
                 className="flex items-center justify-between"
                 style={{ height: "calc(.25rem*13)" }}
               >
-                <div>Chat GPT clone</div>
+                <div className="pl-1 hover:bg-gray-200 rounded-full p-1 transition-all duration-200">
+                  <Link href="/">
+                    <Image
+                      alt="Picture of the Chat bot"
+                      height={30}
+                      src="/avatar.svg"
+                      width={30}
+                    />
+                  </Link>
+                </div>
                 <div>Logo here</div>
               </div>
             </div>
@@ -41,13 +53,17 @@ const Menu = () => {
                 href="/"
                 className="flex items-center truncate text-sm mx-1.5 min-h-9 py-1.5 px-2.5 rounded-[10px] hover:bg-gray-200"
               >
-                <div>New Chat</div>
+                <div className="flex items-center gap-2">
+                  <CiChat2 className="w-5 h-5" /> New Chat
+                </div>
               </a>
               <a
                 href="/"
                 className="flex items-center truncate text-sm mx-1.5 min-h-9 py-1.5 px-2.5 rounded-[10px] hover:bg-gray-200"
               >
-                <div>Search Chat</div>
+                <div className="flex items-center gap-2">
+                  <CiSearch className="w-5 h-5" /> Search Chat
+                </div>
               </a>
             </aside>
           </div>

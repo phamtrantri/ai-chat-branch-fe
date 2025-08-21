@@ -2,7 +2,7 @@ import ChatInput from "./chat_input";
 
 const NewChat = () => {
   return (
-    <div className="relative flex h-full max-w-full flex-1 flex-col items-center justify-center gap-3">
+    <div className="relative flex h-full max-w-full flex-1 flex-col items-center justify-center gap-3 px-2">
       <h1 className="text-[28px] leading-[34px] font-normal tracking-[0.38px]">
         A chat-gpt clone
       </h1>
@@ -12,7 +12,7 @@ const NewChat = () => {
       >
         A fun project that supports branching conversations
       </div>
-      <ChatInput />
+      <ChatInput customClassName="sm:max-w-1/2" />
     </div>
   );
 };
