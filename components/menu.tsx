@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CiChat2, CiSearch } from "react-icons/ci";
+import { CiChat2, CiSearch, CiMenuFries } from "react-icons/ci";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -29,7 +29,7 @@ const Menu = () => {
                 className="flex items-center justify-between"
                 style={{ height: "calc(.25rem*13)" }}
               >
-                <div className="pl-1 hover:bg-gray-200 rounded-full p-1 transition-all duration-200">
+                <div className="pl-1 hover:bg-gray-200 rounded-lg p-1 transition-all duration-200">
                   <Link href="/">
                     <Image
                       alt="Picture of the Chat bot"
@@ -39,7 +39,9 @@ const Menu = () => {
                     />
                   </Link>
                 </div>
-                <div>Logo here</div>
+                <div className="hover:bg-gray-200 p-2 rounded-lg cursor-pointer">
+                  <CiMenuFries className="w-5 h-5" />
+                </div>
               </div>
             </div>
           </div>
