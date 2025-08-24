@@ -2,14 +2,16 @@ import { useState } from "react";
 import { CiChat2, CiSearch, CiMenuFries } from "react-icons/ci";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 interface IProps {
   conversations: Array<any>;
 }
 
 const Menu: React.FC<IProps> = ({ conversations }) => {
+  const router = useRouter();
+  const { id } = router.query || {};
   const [isScrolled, setIsScrolled] = useState(false);
-
   const handleScroll = (e: React.UIEvent<HTMLElement>) => {
     const scrollTop = e.currentTarget.scrollTop;
 
@@ -85,7 +87,9 @@ const Menu: React.FC<IProps> = ({ conversations }) => {
             {conversations.map((conv) => (
               <Link
                 key={conv.id}
-                className="flex items-center text-sm mx-1.5 min-h-9 py-1.5 px-2.5 rounded-[10px] hover:bg-gray-200"
+                className={`flex items-center text-sm mx-1.5 min-h-9 py-1.5 
+                  px-2.5 rounded-[10px] hover:bg-gray-200 active:opacity-70 
+                  ${Number(id) === conv.id ? "bg-gray-200" : ""}`}
                 href={`/chat/${conv.id}`}
               >
                 <span className="truncate">{conv.name}</span>

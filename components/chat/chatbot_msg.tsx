@@ -24,11 +24,15 @@ const ChatbotMsg: React.FC<{ message: any }> = ({ message }) => {
               : "opacity-0 -translate-y-1 scale-95 pointer-events-none"
           }`}
         >
-          <div className="cursor-pointer hover:opacity-70 transition-all duration-200">
-            New thread
-          </div>
-          |<div className="cursor-pointer">Thread 1</div>|
-          <div className="cursor-pointer">Thread 2 </div>
+          {message.content ? (
+            <>
+              <div className="cursor-pointer hover:opacity-70 transition-all duration-200">
+                New thread
+              </div>
+              |<div className="cursor-pointer">Thread 1</div>|
+              <div className="cursor-pointer">Thread 2 </div>
+            </>
+          ) : null}
         </div>
       </div>
     </div>

@@ -138,35 +138,40 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
     <div className="relative flex h-full max-w-full flex-1 flex-col gap-3 px-2 py-4 overflow-hidden shrink-0">
       <div
         ref={scrollContainerRef}
-        className="relative flex flex-col gap-10 h-full max-w-200 w-full mx-auto overflow-y-auto mb-25"
+        className="relative flex flex-col h-full w-full overflow-y-auto mb-10"
       >
-        {history.map((msg) => {
-          if (msg.role === "user") {
-            return <UserMsg key={msg.id} message={msg} />;
-          }
+        <div className="relative flex flex-col gap-10 h-full max-w-200 w-full mx-auto">
+          {history.map((msg) => {
+            if (msg.role === "user") {
+              return <UserMsg key={msg.id} message={msg} />;
+            }
 
-          return <ChatbotMsg key={msg.id} message={msg} />;
-        })}
-        {messages.map((msg) => {
-          if (msg.role === "user") {
-            return <UserMsg key={msg.id} message={msg} />;
-          }
+            return <ChatbotMsg key={msg.id} message={msg} />;
+          })}
+          {messages.map((msg) => {
+            if (msg.role === "user") {
+              return <UserMsg key={msg.id} message={msg} />;
+            }
 
-          return <ChatbotMsg key={msg.id} message={msg} />;
-        })}
-        {isSubmitting ? (
-          <p className="mt-2 whitespace-pre-wrap">
-            {streamedText}
-            <span className="animate-pulse">|</span>
-          </p>
-        ) : null}
+            return <ChatbotMsg key={msg.id} message={msg} />;
+          })}
+          {isSubmitting ? (
+            <p className="mt-2 whitespace-pre-wrap">
+              {streamedText}
+              <span className="animate-pulse">|</span>
+            </p>
+          ) : null}
+          <div className="h-50 invisible">placeholder</div>
+        </div>
       </div>
-      <ChatInput
-        customClassName="absolute bottom-5 left-1/2 transform -translate-x-1/2 max-w-200 w-full"
-        handleStop={cancelStream}
-        handleSubmit={handleSubmit}
-        isSubmitting={isSubmitting}
-      />
+      <div className="absolute flex justify-center bottom-5 w-full px-4">
+        <ChatInput
+          customClassName="max-w-200 w-full"
+          handleStop={cancelStream}
+          handleSubmit={handleSubmit}
+          isSubmitting={isSubmitting}
+        />
+      </div>
     </div>
   );
 };
