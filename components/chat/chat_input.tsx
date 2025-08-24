@@ -1,16 +1,18 @@
 import { useRef, useState } from "react";
 import { IoArrowUpOutline } from "react-icons/io5";
-import TextareaAutosize from 'react-autosize-textarea';
 
+// import TextareaAutosize from "react-autosize-textarea";
 
 interface IChatInputProps {
   customClassName?: string;
+  isNewChat?: boolean;
+  handleSubmit: (userMsg: string) => Promise<void> | void;
 }
 
-const ChatInput = ({ customClassName }: IChatInputProps) => {
+const ChatInput = ({ customClassName, handleSubmit }: IChatInputProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [searchStr, setSearchStr] = useState("");
+  const [userMsg, setUserMsg] = useState("");
 
   const adjustTextareaHeight = () => {
     const textarea = textareaRef.current;
@@ -54,12 +56,16 @@ const ChatInput = ({ customClassName }: IChatInputProps) => {
     return Math.max(1, Math.ceil(contentHeight / effectiveLineHeight));
   };
 
-  const handleSubmit = () => {};
+  const _handleSubmit = () => {
+    handleSubmit(userMsg);
+    setUserMsg("");
+    resetTextareaHeight();
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && e.shiftKey) {
       e.preventDefault();
-      handleSubmit();
+      _handleSubmit();
     }
   };
 
@@ -76,8 +82,8 @@ const ChatInput = ({ customClassName }: IChatInputProps) => {
         placeholder="Ask anything. Shift + Enter to Submit"
         rows={1}
         style={{ transition: "height 0.15s ease-out", overflowY: "hidden" }}
-        value={searchStr}
-        onChange={(e) => setSearchStr(e.target.value)}
+        value={userMsg}
+        onChange={(e) => setUserMsg(e.target.value)}
         onInput={adjustTextareaHeight}
         onKeyDown={handleKeyDown}
       />

@@ -3,7 +3,11 @@ import { CiChat2, CiSearch, CiMenuFries } from "react-icons/ci";
 import Image from "next/image";
 import Link from "next/link";
 
-const Menu = () => {
+interface IProps {
+  conversations: Array<any>;
+}
+
+const Menu: React.FC<IProps> = ({ conversations }) => {
   const [isScrolled, setIsScrolled] = useState(false);
 
   const handleScroll = (e: React.UIEvent<HTMLElement>) => {
@@ -52,16 +56,16 @@ const Menu = () => {
           >
             <aside className="py-2 flex flex-col">
               <a
-                href="/"
                 className="flex items-center truncate text-sm mx-1.5 min-h-9 py-1.5 px-2.5 rounded-[10px] hover:bg-gray-200"
+                href="/"
               >
                 <div className="flex items-center gap-2">
                   <CiChat2 className="w-5 h-5" /> New Chat
                 </div>
               </a>
               <a
-                href="/"
                 className="flex items-center truncate text-sm mx-1.5 min-h-9 py-1.5 px-2.5 rounded-[10px] hover:bg-gray-200"
+                href="/"
               >
                 <div className="flex items-center gap-2">
                   <CiSearch className="w-5 h-5" /> Search Chat
@@ -76,120 +80,15 @@ const Menu = () => {
             >
               Chats
             </h2>
-            <a
-              href="/"
-              className="flex items-center truncate text-sm mx-1.5 min-h-9 py-1.5 px-2.5 rounded-[10px] hover:bg-gray-200"
-            >
-              Create First Database
-            </a>
-            <a
-              href="/"
-              className="flex items-center truncate text-sm mx-1.5 min-h-9 py-1.5 px-2.5 rounded-[10px] hover:bg-gray-200"
-            >
-              Deploy NextJs Fast API AWS
-            </a>
-            <a
-              href="/"
-              className="flex items-center truncate text-sm mx-1.5 min-h-9 py-1.5 px-2.5 rounded-[10px] hover:bg-gray-200"
-            >
-              Japan PR point system
-            </a>
-            <a
-              href="/"
-              className="flex items-center truncate text-sm mx-1.5 min-h-9 py-1.5 px-2.5 rounded-[10px] hover:bg-gray-200"
-            >
-              Japan PR point system
-            </a>
-            <a
-              href="/"
-              className="flex items-center truncate text-sm mx-1.5 min-h-9 py-1.5 px-2.5 rounded-[10px] hover:bg-gray-200"
-            >
-              Japan PR point system
-            </a>
-            <a
-              href="/"
-              className="flex items-center truncate text-sm mx-1.5 min-h-9 py-1.5 px-2.5 rounded-[10px] hover:bg-gray-200"
-            >
-              Japan PR point system
-            </a>
-            <a
-              href="/"
-              className="flex items-center truncate text-sm mx-1.5 min-h-9 py-1.5 px-2.5 rounded-[10px] hover:bg-gray-200"
-            >
-              Japan PR point system
-            </a>
-            <a
-              href="/"
-              className="flex items-center truncate text-sm mx-1.5 min-h-9 py-1.5 px-2.5 rounded-[10px] hover:bg-gray-200"
-            >
-              Japan PR point system
-            </a>
-            <a
-              href="/"
-              className="flex items-center truncate text-sm mx-1.5 min-h-9 py-1.5 px-2.5 rounded-[10px] hover:bg-gray-200"
-            >
-              Japan PR point system
-            </a>
-            <a
-              href="/"
-              className="flex items-center truncate text-sm mx-1.5 min-h-9 py-1.5 px-2.5 rounded-[10px] hover:bg-gray-200"
-            >
-              Japan PR point system
-            </a>
-            <a
-              href="/"
-              className="flex items-center truncate text-sm mx-1.5 min-h-9 py-1.5 px-2.5 rounded-[10px] hover:bg-gray-200"
-            >
-              Japan PR point system
-            </a>
-            <a
-              href="/"
-              className="flex items-center truncate text-sm mx-1.5 min-h-9 py-1.5 px-2.5 rounded-[10px] hover:bg-gray-200"
-            >
-              Japan PR point system
-            </a>
-            <a
-              href="/"
-              className="flex items-center truncate text-sm mx-1.5 min-h-9 py-1.5 px-2.5 rounded-[10px] hover:bg-gray-200"
-            >
-              Japan PR point system
-            </a>
-            <a
-              href="/"
-              className="flex items-center truncate text-sm mx-1.5 min-h-9 py-1.5 px-2.5 rounded-[10px] hover:bg-gray-200"
-            >
-              Japan PR point system
-            </a>
-            <a
-              href="/"
-              className="flex items-center truncate text-sm mx-1.5 min-h-9 py-1.5 px-2.5 rounded-[10px] hover:bg-gray-200"
-            >
-              Japan PR point system
-            </a>
-            <a
-              href="/"
-              className="flex items-center truncate text-sm mx-1.5 min-h-9 py-1.5 px-2.5 rounded-[10px] hover:bg-gray-200"
-            >
-              Japan PR point system
-            </a>
-            <a
-              href="/"
-              className="flex items-center truncate text-sm mx-1.5 min-h-9 py-1.5 px-2.5 rounded-[10px] hover:bg-gray-200"
-            >
-              Japan PR point system
-            </a>
-            <a
-              href="/"
-              className="flex items-center truncate text-sm mx-1.5 min-h-9 py-1.5 px-2.5 rounded-[10px] hover:bg-gray-200"
-            >
-              Japan PR point system
-            </a>
-            <a
-              href="/"
-              className="flex items-center truncate text-sm mx-1.5 min-h-9 py-1.5 px-2.5 rounded-[10px] hover:bg-gray-200"
-            >
-              Japan PR point system
-            </a>
+            {conversations.map((conv) => (
+              <Link
+                key={conv.id}
+                className="flex items-center truncate text-sm mx-1.5 min-h-9 py-1.5 px-2.5 rounded-[10px] hover:bg-gray-200"
+                href={`/chat/${conv.id}`}
+              >
+                {conv.name}
+              </Link>
+            ))}
           </aside>
         </nav>
       </div>
