@@ -13,11 +13,23 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
   const { id } = router.query || {};
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const isCreatedFirstMsgRef = useRef(false);
+  const readerRef = useRef<ReadableStreamDefaultReader<Uint8Array> | null>(
+    null
+  );
   const [messages, setMessages] = useState<
     { id: string; content: string; role: "user" | "assistant" }[]
   >([]);
   const [streamedText, setStreamedText] = useState("");
   const [isSubmitting, setIsSubmiting] = useState(false);
+
+  const cancelStream = () => {
+    if (readerRef.current) {
+      readerRef.current.cancel();
+      readerRef.current = null;
+    }
+    setIsSubmiting(false);
+    setStreamedText("");
+  };
 
   const submitMessage = async (
     userMsg: string,
@@ -31,9 +43,7 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
       ...messages,
       { id: generateUUID(), content: userMsg, role: "user" },
     ]);
-    scrollToBottom();
 
-    let reader;
     let fullContent = "";
 
     try {
@@ -47,12 +57,12 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
         throw new Error("ReadableStream not supported in this environment.");
       }
 
-      reader = response.body.getReader();
+      readerRef.current = response.body.getReader();
       const decoder = new TextDecoder();
       let done = false;
 
       while (!done) {
-        const { value, done: streamDone } = await reader.read();
+        const { value, done: streamDone } = await readerRef.current.read();
 
         if (value) {
           const chunk = decoder.decode(value, { stream: true });
@@ -63,8 +73,15 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
         done = streamDone;
         scrollToBottom();
       }
+    } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") {
+        console.log("Stream was cancelled");
+      } else {
+        console.error("Stream error:", error);
+      }
     } finally {
-      reader && reader.releaseLock();
+      readerRef.current?.releaseLock();
+      readerRef.current = null;
       setIsSubmiting(false);
       setMessages((prev) => [
         ...prev,
@@ -99,6 +116,20 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
     scrollToBottom();
   }, [id]);
 
+  // Scroll to bottom whenever messages change
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  // Cleanup effect to cancel any ongoing streams when component unmounts
+  useEffect(() => {
+    return () => {
+      if (readerRef.current) {
+        readerRef.current.cancel();
+      }
+    };
+  }, []);
+
   const handleSubmit = async (userMsg: string) => {
     submitMessage(userMsg);
   };
@@ -132,7 +163,9 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
       </div>
       <ChatInput
         customClassName="absolute bottom-5 left-1/2 transform -translate-x-1/2 max-w-200 w-full"
+        handleStop={cancelStream}
         handleSubmit={handleSubmit}
+        isSubmitting={isSubmitting}
       />
     </div>
   );

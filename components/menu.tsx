@@ -56,26 +56,28 @@ const Menu: React.FC<IProps> = ({ conversations }) => {
           >
             <aside className="py-2 flex flex-col">
               <a
-                className="flex items-center truncate text-sm mx-1.5 min-h-9 py-1.5 px-2.5 rounded-[10px] hover:bg-gray-200"
+                className="flex items-center text-sm mx-1.5 min-h-9 py-1.5 px-2.5 rounded-[10px] hover:bg-gray-200"
                 href="/"
               >
-                <div className="flex items-center gap-2">
-                  <CiChat2 className="w-5 h-5" /> New Chat
+                <div className="flex items-center gap-2 min-w-0 flex-1">
+                  <CiChat2 className="w-5 h-5 flex-shrink-0" />
+                  <span className="truncate">New Chat</span>
                 </div>
               </a>
               <a
-                className="flex items-center truncate text-sm mx-1.5 min-h-9 py-1.5 px-2.5 rounded-[10px] hover:bg-gray-200"
+                className="flex items-center text-sm mx-1.5 min-h-9 py-1.5 px-2.5 rounded-[10px] hover:bg-gray-200"
                 href="/"
               >
-                <div className="flex items-center gap-2">
-                  <CiSearch className="w-5 h-5" /> Search Chat
+                <div className="flex items-center gap-2 min-w-0 flex-1">
+                  <CiSearch className="w-5 h-5 flex-shrink-0" />
+                  <span className="truncate">Search Chat</span>
                 </div>
               </a>
             </aside>
           </div>
           <aside className="flex flex-col py-2.5">
             <h2
-              className="block text-sm font-normal mx-1.5 my-0 py-2 px-2.5 overflow-hidden text-ellipsis"
+              className="block text-sm font-normal mx-1.5 my-0 py-2 px-2.5 truncate"
               style={{ color: "#8f8f8f" }}
             >
               Chats
@@ -83,10 +85,10 @@ const Menu: React.FC<IProps> = ({ conversations }) => {
             {conversations.map((conv) => (
               <Link
                 key={conv.id}
-                className="flex items-center truncate text-sm mx-1.5 min-h-9 py-1.5 px-2.5 rounded-[10px] hover:bg-gray-200"
+                className="flex items-center text-sm mx-1.5 min-h-9 py-1.5 px-2.5 rounded-[10px] hover:bg-gray-200"
                 href={`/chat/${conv.id}`}
               >
-                {conv.name}
+                <span className="truncate">{conv.name}</span>
               </Link>
             ))}
           </aside>

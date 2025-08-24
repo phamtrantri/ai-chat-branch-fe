@@ -1,23 +1,28 @@
 import { useRouter } from "next/router";
+import { useState } from "react";
 
 import ChatInput from "./chat_input";
 
 const NewChat = () => {
   const router = useRouter();
+  const [isSubmitting, setIsSubmiting] = useState(false);
   const handleSubmit = async (userMsg: string) => {
-    const res = await fetch("http://localhost:8000/conversations/v1/create", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ first_msg: userMsg }),
-    });
+    try {
+      setIsSubmiting(true);
+      const res = await fetch("http://localhost:8000/conversations/v1/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ first_msg: userMsg }),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    router.push(`/chat/${data.data.conversation.id}`);
-
-    return;
+      router.push(`/chat/${data.data.conversation.id}`);
+    } finally {
+      setIsSubmiting(false);
+    }
   };
 
   return (
@@ -31,7 +36,11 @@ const NewChat = () => {
       >
         A fun project that supports branching conversations
       </div>
-      <ChatInput handleSubmit={handleSubmit} customClassName="sm:max-w-1/2" />
+      <ChatInput
+        customClassName="sm:max-w-1/2"
+        handleSubmit={handleSubmit}
+        isSubmitting={isSubmitting}
+      />
     </div>
   );
 };
