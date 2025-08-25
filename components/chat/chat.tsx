@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
+import { Spinner } from "@heroui/spinner";
 
 import ChatInput from "./chat_input";
 import ChatbotMsg from "./chatbot_msg";
@@ -68,7 +69,7 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
           const chunk = decoder.decode(value, { stream: true });
 
           fullContent += chunk;
-          setStreamedText(fullContent);
+          setStreamedText(fullContent + "|");
         }
         done = streamDone;
         scrollToBottom();
@@ -119,7 +120,7 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
   // Scroll to bottom whenever messages change
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, isSubmitting]);
 
   // Cleanup effect to cancel any ongoing streams when component unmounts
   useEffect(() => {
@@ -156,10 +157,12 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
             return <ChatbotMsg key={msg.id} message={msg} />;
           })}
           {isSubmitting ? (
-            <p className="mt-2 whitespace-pre-wrap">
-              {streamedText}
-              <span className="animate-pulse">|</span>
-            </p>
+            <div className="flex items-center">
+              <ChatbotMsg message={{ content: streamedText }} />
+              {!streamedText ? (
+                <Spinner color="current" size="md" variant="dots" />
+              ) : null}
+            </div>
           ) : null}
           <div className="h-50 invisible">placeholder</div>
         </div>

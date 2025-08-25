@@ -1,8 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import { IoArrowUpOutline, IoStop } from "react-icons/io5";
 
-// import TextareaAutosize from "react-autosize-textarea";
-
 interface IChatInputProps {
   customClassName?: string;
   isSubmitting: boolean;
