@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { Spinner } from "@heroui/spinner";
 
@@ -21,14 +21,14 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
     { id: string; content: string; role: "user" | "assistant" }[]
   >([]);
   const [streamedText, setStreamedText] = useState("");
-  const [isSubmitting, setIsSubmiting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const cancelStream = () => {
     if (readerRef.current) {
       readerRef.current.cancel();
       readerRef.current = null;
     }
-    setIsSubmiting(false);
+    setIsSubmitting(false);
     setStreamedText("");
   };
 
@@ -39,7 +39,7 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
     if (!userMsg.trim()) {
       return;
     }
-    setIsSubmiting(true);
+    setIsSubmitting(true);
     setMessages([
       ...messages,
       { id: generateUUID(), content: userMsg, role: "user" },
@@ -83,7 +83,7 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
     } finally {
       readerRef.current?.releaseLock();
       readerRef.current = null;
-      setIsSubmiting(false);
+      setIsSubmitting(false);
       setMessages((prev) => [
         ...prev,
         { id: generateUUID(), content: fullContent, role: "assistant" },
@@ -102,19 +102,28 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
     }
   };
 
-  const scrollToBottom = () => {
+  const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
     const scrollContainer = scrollContainerRef.current;
 
     scrollContainer?.scrollTo({
       top: scrollContainer.scrollHeight,
-      behavior: "smooth",
+      behavior: behavior,
     });
   };
+
+  useLayoutEffect(() => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.style.visibility = "hidden";
+    }
+  }, [id]);
 
   useEffect(() => {
     setMessages([]);
     submitFirstMessage();
-    scrollToBottom();
+    scrollToBottom("instant");
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.style.visibility = "visible";
+    }
   }, [id]);
 
   // Scroll to bottom whenever messages change
@@ -140,6 +149,7 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
       <div
         ref={scrollContainerRef}
         className="relative flex flex-col h-full w-full overflow-y-auto mb-10"
+        style={{ visibility: "hidden" }}
       >
         <div className="relative flex flex-col gap-10 h-full max-w-200 w-full mx-auto">
           {history.map((msg) => {
