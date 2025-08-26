@@ -144,6 +144,9 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
 
   // Scroll to bottom whenever messages change
   useEffect(() => {
+    if (newThreadMsg) {
+      return;
+    }
     scrollToBottom();
   }, [messages, isSubmitting]);
 
@@ -183,13 +186,17 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
       setIsSubmitting(true);
       const conversation = await createConversation(userMsg, newThreadMsg.id);
 
+      router.push(`/chat/${conversation.id}`);
       setNewThreadMsg(undefined);
       setMessages([]);
       isCreatedFirstMsgRef.current = false;
-      router.push(`/chat/${conversation.id}`);
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const resetInput = () => {
+    setNewThreadMsg(undefined);
   };
 
   return (
@@ -210,6 +217,7 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
                 key={msg.id}
                 isHighlighted={Number(focusMsg) === msg.id}
                 message={msg}
+                resetInput={resetInput}
                 startNewThread={setNewThreadMsg}
               />
             );
@@ -218,6 +226,7 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
             <div className="flex items-center">
               <ChatbotMsg
                 message={{ content: streamedText }}
+                resetInput={resetInput}
                 startNewThread={setNewThreadMsg}
               />
               {!streamedText ? (

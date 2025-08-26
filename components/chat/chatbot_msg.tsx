@@ -14,14 +14,19 @@ interface IProps {
   message: any;
   isHighlighted?: boolean;
   startNewThread: (message: any) => void;
+  resetInput: () => void;
 }
 
 const ChatbotMsg: React.FC<IProps> = ({
   message,
   isHighlighted,
   startNewThread,
+  resetInput,
 }) => {
   const router = useRouter();
+  const stopFocus = () => {
+    router.replace(`/chat/${router.query.id}`);
+  };
 
   return (
     <div
@@ -85,6 +90,7 @@ const ChatbotMsg: React.FC<IProps> = ({
                       key={elem.id}
                       onClick={() => {
                         router.push(`/chat/${elem.id}`);
+                        resetInput();
                       }}
                     >
                       {elem.name}
@@ -92,6 +98,15 @@ const ChatbotMsg: React.FC<IProps> = ({
                   ))}
                 </DropdownMenu>
               </Dropdown>
+            ) : null}
+            {isHighlighted ? (
+              <button
+                className="flex items-center cursor-pointer hover:opacity-70 transition-all duration-200 bg-gray-100 px-1 py-0.5 rounded-sm font-medium"
+                type="button"
+                onClick={stopFocus}
+              >
+                Stop focus
+              </button>
             ) : null}
           </div>
         ) : null}
