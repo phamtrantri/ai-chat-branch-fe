@@ -3,25 +3,19 @@ import { useState } from "react";
 
 import ChatInput from "./chat_input";
 
+import { createConversation } from "@/services";
+
 const NewChat = () => {
   const router = useRouter();
-  const [isSubmitting, setIsSubmiting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const handleSubmit = async (userMsg: string) => {
     try {
-      setIsSubmiting(true);
-      const res = await fetch("http://localhost:8000/conversations/v1/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ first_msg: userMsg }),
-      });
+      setIsSubmitting(true);
+      const conversation = await createConversation(userMsg);
 
-      const data = await res.json();
-
-      router.push(`/chat/${data.data.conversation.id}`);
+      router.push(`/chat/${conversation.id}`);
     } finally {
-      setIsSubmiting(false);
+      setIsSubmitting(false);
     }
   };
 

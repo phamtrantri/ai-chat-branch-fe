@@ -1,3 +1,20 @@
+export const createConversation = async (
+  userMsg: string,
+  newThreadMsg?: string
+) => {
+  const res = await fetch("http://localhost:8000/conversations/v1/create", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ first_msg: userMsg, message_id: newThreadMsg }),
+  });
+
+  const data = await res.json();
+
+  return data.data.conversation;
+};
+
 export const getAllConversations = async () => {
   const res = await fetch("http://localhost:8000/conversations/v1/getAll", {
     method: "POST",

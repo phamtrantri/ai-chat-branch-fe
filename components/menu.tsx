@@ -78,10 +78,7 @@ const Menu: React.FC<IProps> = ({ conversations }) => {
             </aside>
           </div>
           <aside className="flex flex-col py-2.5">
-            <h2
-              className="block text-sm font-normal mx-1.5 my-0 py-2 px-2.5 truncate"
-              style={{ color: "#8f8f8f" }}
-            >
+            <h2 className="block text-sm text-[#8f8f8f] font-normal mx-1.5 my-0 py-2 px-2.5 truncate">
               Chats
             </h2>
             {conversations.map((conv) => (

@@ -6,7 +6,7 @@ import ChatInput from "./chat_input";
 import ChatbotMsg from "./chatbot_msg";
 import UserMsg from "./user_msg";
 
-import { createStreamedMessage } from "@/services";
+import { createConversation, createStreamedMessage } from "@/services";
 import { generateUUID } from "@/utils/uuid";
 
 const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
@@ -22,6 +22,7 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
   >([]);
   const [streamedText, setStreamedText] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [newThreadMsg, setNewThreadMsg] = useState<any>();
 
   const cancelStream = () => {
     if (readerRef.current) {
@@ -40,12 +41,15 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
       return;
     }
     setIsSubmitting(true);
-    setMessages([
-      ...messages,
-      { id: generateUUID(), content: userMsg, role: "user" },
-    ]);
+    if (!is_new_conversation) {
+      setMessages([
+        ...messages,
+        { id: generateUUID(), content: userMsg, role: "user" },
+      ]);
+    }
 
     let fullContent = "";
+    let newChatBotMsgId = "";
 
     try {
       const response = await createStreamedMessage(
@@ -66,9 +70,20 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
         const { value, done: streamDone } = await readerRef.current.read();
 
         if (value) {
-          const chunk = decoder.decode(value, { stream: true });
+          const res: any = decoder.decode(value, { stream: true });
+          const chunks = res.split("\n");
+          let content = "";
 
-          fullContent += chunk;
+          for (let chunk of chunks) {
+            if (chunk.trim()) {
+              const json = JSON.parse(chunk);
+
+              content += json.content;
+              newChatBotMsgId = json.message_id;
+            }
+          }
+
+          fullContent += content;
           setStreamedText(fullContent + "|");
         }
         done = streamDone;
@@ -86,7 +101,7 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
       setIsSubmitting(false);
       setMessages((prev) => [
         ...prev,
-        { id: generateUUID(), content: fullContent, role: "assistant" },
+        { id: newChatBotMsgId, content: fullContent, role: "assistant" },
       ]);
       setStreamedText("");
     }
@@ -144,6 +159,20 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
     submitMessage(userMsg);
   };
 
+  const handleSubmitNewThread = async (userMsg: string) => {
+    try {
+      setIsSubmitting(true);
+      const conversation = await createConversation(userMsg, newThreadMsg.id);
+
+      setNewThreadMsg(undefined);
+      setMessages([]);
+      isCreatedFirstMsgRef.current = false;
+      router.push(`/chat/${conversation.id}`);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="relative flex h-full max-w-full flex-1 flex-col gap-3 px-2 py-4 overflow-hidden shrink-0">
       <div
@@ -152,23 +181,25 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
         style={{ visibility: "hidden" }}
       >
         <div className="relative flex flex-col gap-10 h-full max-w-200 w-full mx-auto">
-          {history.map((msg) => {
+          {[...history, ...messages].map((msg) => {
             if (msg.role === "user") {
               return <UserMsg key={msg.id} message={msg} />;
             }
 
-            return <ChatbotMsg key={msg.id} message={msg} />;
-          })}
-          {messages.map((msg) => {
-            if (msg.role === "user") {
-              return <UserMsg key={msg.id} message={msg} />;
-            }
-
-            return <ChatbotMsg key={msg.id} message={msg} />;
+            return (
+              <ChatbotMsg
+                key={msg.id}
+                message={msg}
+                startNewThread={setNewThreadMsg}
+              />
+            );
           })}
           {isSubmitting ? (
             <div className="flex items-center">
-              <ChatbotMsg message={{ content: streamedText }} />
+              <ChatbotMsg
+                message={{ content: streamedText }}
+                startNewThread={setNewThreadMsg}
+              />
               {!streamedText ? (
                 <Spinner color="current" size="md" variant="dots" />
               ) : null}
@@ -181,8 +212,12 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
         <ChatInput
           customClassName="max-w-200 w-full"
           handleStop={cancelStream}
-          handleSubmit={handleSubmit}
+          handleSubmit={!!newThreadMsg ? handleSubmitNewThread : handleSubmit}
           isSubmitting={isSubmitting}
+          newThreadMsg={newThreadMsg}
+          onCloseThread={() => {
+            setNewThreadMsg(undefined);
+          }}
         />
       </div>
     </div>
