@@ -11,7 +11,8 @@ import { generateUUID } from "@/utils/uuid";
 
 const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
   const router = useRouter();
-  const { id } = router.query || {};
+  const { id, focus: focusMsg } = router.query || {};
+
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const isCreatedFirstMsgRef = useRef(false);
   const readerRef = useRef<ReadableStreamDefaultReader<Uint8Array> | null>(
@@ -155,8 +156,26 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
     };
   }, []);
 
+  useEffect(() => {
+    setTimeout(() => {
+      scrollToMessage(focusMsg as string);
+    }, 50);
+  }, [id, focusMsg]);
+
   const handleSubmit = async (userMsg: string) => {
     submitMessage(userMsg);
+  };
+
+  const scrollToMessage = (
+    messageId: string,
+    behavior: ScrollBehavior = "smooth"
+  ) => {
+    if (!messageId) return;
+    const el = document.getElementById(`msg-${messageId}`);
+
+    if (el) {
+      el.scrollIntoView({ behavior, block: "start" });
+    }
   };
 
   const handleSubmitNewThread = async (userMsg: string) => {
@@ -189,6 +208,7 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
             return (
               <ChatbotMsg
                 key={msg.id}
+                isHighlighted={Number(focusMsg) === msg.id}
                 message={msg}
                 startNewThread={setNewThreadMsg}
               />
@@ -208,17 +228,19 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
           <div className="h-50 invisible">placeholder</div>
         </div>
       </div>
-      <div className="absolute flex justify-center bottom-5 w-full px-4">
-        <ChatInput
-          customClassName="max-w-200 w-full"
-          handleStop={cancelStream}
-          handleSubmit={!!newThreadMsg ? handleSubmitNewThread : handleSubmit}
-          isSubmitting={isSubmitting}
-          newThreadMsg={newThreadMsg}
-          onCloseThread={() => {
-            setNewThreadMsg(undefined);
-          }}
-        />
+      <div className="absolute inset-x-0 bottom-5 flex justify-center w-full px-2">
+        <div className="w-full px-2 max-w-200">
+          <ChatInput
+            customClassName="w-full"
+            handleStop={cancelStream}
+            handleSubmit={!!newThreadMsg ? handleSubmitNewThread : handleSubmit}
+            isSubmitting={isSubmitting}
+            newThreadMsg={newThreadMsg}
+            onCloseThread={() => {
+              setNewThreadMsg(undefined);
+            }}
+          />
+        </div>
       </div>
     </div>
   );

@@ -40,7 +40,7 @@ export const getConversationDetails = async (id: number) => {
 
   const data = await res.json();
 
-  return await data.data.messages;
+  return data.data;
 };
 
 export const createStreamedMessage = async (
