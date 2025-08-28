@@ -23,7 +23,7 @@ export default function IndexPage({
   return (
     <DefaultLayout conversations={conversations}>
       <div className="relative flex max-w-full h-full flex-1 flex-col">
-        <ChatHeader />
+        <ChatHeader conversations={conversations} />
         <NewChat />
       </div>
     </DefaultLayout>

@@ -1,14 +1,22 @@
 import { useState } from "react";
-import { CiChat2, CiSearch, CiMenuFries } from "react-icons/ci";
+import { CiChat2, CiSearch } from "react-icons/ci";
+import { HiMenuAlt2 } from "react-icons/hi";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { IoCloseOutline } from "react-icons/io5";
 
 interface IProps {
   conversations: Array<any>;
+  isMobile: boolean;
+  onCloseOnMobile?: () => void;
 }
 
-const Menu: React.FC<IProps> = ({ conversations }) => {
+const Menu: React.FC<IProps> = ({
+  conversations,
+  isMobile,
+  onCloseOnMobile,
+}) => {
   const router = useRouter();
   const { id } = router.query || {};
   const [isScrolled, setIsScrolled] = useState(false);
@@ -22,9 +30,39 @@ const Menu: React.FC<IProps> = ({ conversations }) => {
   const actionClassNames =
     "flex items-center text-sm mx-1.5 py-1.5 px-2.5 min-h-9 rounded-[10px] hover:bg-gray-200";
 
+  const renderTopLeftIcon = () => {
+    if (isMobile) {
+      return (
+        <button
+          className="p-2 rounded-lg cursor-w-resize"
+          type="button"
+          onClick={onCloseOnMobile}
+        >
+          <IoCloseOutline className="w-4.5 h-4.5" />
+        </button>
+      );
+    }
+
+    if (!isMobile && isExpanded) {
+      return (
+        <button
+          className="p-2 rounded-lg cursor-w-resize"
+          type="button"
+          onClick={() => {
+            setIsExpanded(false);
+          }}
+        >
+          <HiMenuAlt2 className="w-4.5 h-4.5" />
+        </button>
+      );
+    }
+
+    return null;
+  };
+
   return (
     <div
-      className={`relative h-full shrink-0 overflow-hidden border-e border-gray-200 bg-gray-50 transition-width duration-200 ease-in-out ${isExpanded ? "w-[260px]" : "w-13"}`}
+      className={`${isMobile ? "block" : "hidden"} sm:block relative h-full shrink-0 overflow-hidden border-e border-gray-200 bg-gray-50 transition-width duration-200 ease-in-out ${isExpanded ? "w-[260px]" : "w-13"}`}
     >
       <div className="relative flex h-full flex-col">
         <nav
@@ -58,21 +96,11 @@ const Menu: React.FC<IProps> = ({ conversations }) => {
                         setIsExpanded(true);
                       }}
                     >
-                      <CiMenuFries className="w-4.5 h-4.5" />
+                      <HiMenuAlt2 className="w-4.5 h-4.5" />
                     </button>
                   )}
                 </div>
-                {isExpanded ? (
-                  <button
-                    className="p-2 rounded-lg cursor-w-resize"
-                    type="button"
-                    onClick={() => {
-                      setIsExpanded(false);
-                    }}
-                  >
-                    <CiMenuFries className="w-4.5 h-4.5" />
-                  </button>
-                ) : null}
+                {renderTopLeftIcon()}
               </div>
             </div>
           </div>
@@ -112,6 +140,7 @@ const Menu: React.FC<IProps> = ({ conversations }) => {
                   px-2.5 rounded-[10px] hover:bg-gray-200 active:opacity-70 
                   ${Number(id) === conv.id ? "bg-gray-200" : ""}`}
                   href={`/chat/${conv.id}`}
+                  onClick={isMobile ? onCloseOnMobile : undefined}
                 >
                   <span className="truncate">{conv.name}</span>
                 </Link>

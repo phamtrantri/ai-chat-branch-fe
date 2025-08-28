@@ -13,7 +13,7 @@ export default function DefaultLayout({
     <div className="relative flex flex-col h-screen">
       <Head />
       <main className="relative flex flex-row h-full w-full">
-        <Menu conversations={conversations} />
+        <Menu conversations={conversations} isMobile={false} />
         {children}
       </main>
     </div>
