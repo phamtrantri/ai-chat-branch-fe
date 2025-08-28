@@ -162,7 +162,7 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
   useEffect(() => {
     setTimeout(() => {
       scrollToMessage(focusMsg as string);
-    }, 50);
+    }, 100);
   }, [id, focusMsg]);
 
   const handleSubmit = async (userMsg: string) => {
