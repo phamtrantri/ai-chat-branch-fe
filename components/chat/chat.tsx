@@ -237,7 +237,7 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
           <div className="h-50 invisible">placeholder</div>
         </div>
       </div>
-      <div className="absolute inset-x-0 bottom-5 flex justify-center w-full px-2">
+      <div className="absolute inset-x-0 bottom-5 z-10 flex justify-center w-full px-2">
         <div className="w-full px-2 max-w-200">
           <ChatInput
             customClassName="w-full"

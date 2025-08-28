@@ -10,7 +10,7 @@ export default function DefaultLayout({
   conversations: Array<any>;
 }) {
   return (
-    <div className="relative flex flex-col h-screen">
+    <div className="relative flex flex-col h-[100svh]">
       <Head />
       <main className="relative flex flex-row h-full w-full">
         <Menu conversations={conversations} isMobile={false} />

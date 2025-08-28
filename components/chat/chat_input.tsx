@@ -115,6 +115,7 @@ const ChatInput = ({
         />
         <button
           className="flex items-center justify-center h-9 w-9 min-w-9 min-h-9 rounded-full bg-black cursor-pointer self-end border-0 p-0"
+          type="button"
           onClick={isSubmitting ? handleStop : _handleSubmit}
         >
           {isSubmitting ? (
