@@ -79,14 +79,14 @@ const ChatInput = ({
   return (
     <div
       ref={containerRef}
-      className={`flex flex-col w-full border-1 border-default-300 bg-white 
+      className={`flex flex-col w-full border-1 border-default-300 bg-white dark:bg-[#323232D9] dark:border-[#323232D9]
         shadow-md transition-[border-radius] duration-150 ease-out ${customClassName}`}
       style={{ borderRadius: "28px" }}
     >
       {!!newThreadMsg ? (
         <div className="w-full">
-          <div className="mx-1 mt-1 rounded-t-[10px] rounded-b-lg bg-gray-100 border-1 border-default-100">
-            <div className="flex items-center justify-between text-sm text-[#8f8f8f] font-medium px-1.5 border-b-1 border-default-200">
+          <div className="dark:bg-[#424242] mx-1 mt-1 rounded-t-[10px] rounded-b-lg bg-gray-100 border-1 border-default-100">
+            <div className="flex items-center justify-between text-sm text-[#8f8f8f] font-medium px-1.5 border-b-1 border-default-200 dark:border-default-300">
               <span>Thread starter</span>
               <IoCloseOutline
                 className="cursor-pointer w-5 h-5 hover:opacity-70"

@@ -200,7 +200,7 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
   };
 
   return (
-    <div className="relative flex h-full max-w-full flex-1 flex-col gap-3 px-2 py-4 overflow-hidden shrink-0">
+    <div className="dark:bg-[#212121e6] relative flex h-full max-w-full flex-1 flex-col gap-3 px-2 py-4 overflow-hidden shrink-0">
       <div
         ref={scrollContainerRef}
         className="relative flex flex-col h-full w-full overflow-y-auto mb-10"

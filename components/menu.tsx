@@ -28,7 +28,7 @@ const Menu: React.FC<IProps> = ({
   };
 
   const actionClassNames =
-    "flex items-center text-sm mx-1.5 py-1.5 px-2.5 min-h-9 rounded-[10px] hover:bg-gray-200";
+    "dark:bg-[#181818] flex items-center text-sm mx-1.5 py-1.5 px-2.5 min-h-9 rounded-[10px] hover:bg-gray-200 dark:hover:bg-[#ffffff1a]";
 
   const renderTopLeftIcon = () => {
     if (isMobile) {
@@ -62,7 +62,7 @@ const Menu: React.FC<IProps> = ({
 
   return (
     <div
-      className={`${isMobile ? "block" : "hidden"} sm:block relative h-full shrink-0 overflow-hidden border-e border-gray-200 bg-gray-50 transition-width duration-200 ease-in-out ${isExpanded ? "w-[260px]" : "w-13"}`}
+      className={`dark:bg-[#181818] dark:border-[#181818] ${isMobile ? "block" : "hidden"} sm:block relative h-full shrink-0 overflow-hidden border-e border-gray-200 bg-gray-50 transition-width duration-200 ease-in-out ${isExpanded ? "w-[260px]" : "w-13"}`}
     >
       <div className="relative flex h-full flex-col">
         <nav
@@ -70,7 +70,7 @@ const Menu: React.FC<IProps> = ({
           onScroll={handleScroll}
         >
           <div
-            className={`sticky top-0 z-30 bg-gray-50 transition-shadow duration-200 ${
+            className={`dark:bg-[#181818] sticky top-0 z-30 bg-gray-50 transition-shadow duration-200 ${
               isScrolled ? "shadow-md" : "shadow-none"
             }`}
           >
@@ -105,7 +105,7 @@ const Menu: React.FC<IProps> = ({
             </div>
           </div>
           <div
-            className={`sticky top-13 z-30 bg-gray-50 transition-shadow duration-200 ${
+            className={`dark:bg-[#181818] sticky top-13 z-30 bg-gray-50 transition-shadow duration-200 ${
               isScrolled ? "shadow-md" : "shadow-none"
             }`}
           >
@@ -137,8 +137,8 @@ const Menu: React.FC<IProps> = ({
                 <Link
                   key={conv.id}
                   className={`flex items-center text-sm mx-1.5 min-h-9 py-1.5 
-                  px-2.5 rounded-[10px] hover:bg-gray-200 active:opacity-70 
-                  ${Number(id) === conv.id ? "bg-gray-200" : ""}`}
+                  px-2.5 rounded-[10px] hover:bg-gray-200 dark:hover:bg-[#ffffff1a] active:opacity-70 
+                  ${Number(id) === conv.id ? "bg-gray-200 dark:bg-[#ffffff1a]" : ""}`}
                   href={`/chat/${conv.id}`}
                   onClick={isMobile ? onCloseOnMobile : undefined}
                 >
