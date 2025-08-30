@@ -1,6 +1,8 @@
 import { useRef, useState, useEffect } from "react";
-import { GoPlus } from "react-icons/go";
 import { IoArrowUpOutline, IoStop, IoCloseOutline } from "react-icons/io5";
+import isEmpty from "lodash/isEmpty";
+
+import FunctionButton, { IFunctionButtonRef } from "./function_btn";
 
 interface IChatInputProps {
   customClassName?: string;
@@ -21,8 +23,12 @@ const ChatInput = ({
 }: IChatInputProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const functionBtnRef = useRef<IFunctionButtonRef>(null);
   const [userMsg, setUserMsg] = useState("");
   const [isMoreThan1Line, setIsMoreThan1Line] = useState(false);
+  const [selectedFunction, setSelectedFunction] = useState<
+    { label: string; value: string; icon: JSX.Element } | undefined
+  >();
 
   const adjustTextareaHeight = () => {
     const textarea = textareaRef.current;
@@ -70,16 +76,19 @@ const ChatInput = ({
     }
   };
 
+  const isExpandedInput = isMoreThan1Line || !isEmpty(selectedFunction);
+  const hasThread = !!newThreadMsg;
+
   return (
     <div
       ref={containerRef}
       className={`flex flex-col w-full border-1 border-default-300 bg-white dark:bg-[#323232D9] dark:border-[#323232D9]
         shadow-md transition-[border-radius] duration-150 ease-out ${customClassName}`}
       style={{
-        borderRadius: isMoreThan1Line || !!newThreadMsg ? "16px" : "28px",
+        borderRadius: isExpandedInput || hasThread ? "16px" : "28px",
       }}
     >
-      {!!newThreadMsg ? (
+      {hasThread ? (
         <div className="w-full">
           <div className="dark:bg-[#424242] mx-1 mt-1 rounded-t-[10px] rounded-b-lg bg-gray-100 border-1 border-default-100">
             <div className="flex items-center justify-between text-sm text-[#8f8f8f] font-medium px-1.5 border-b-1 border-default-200 dark:border-default-300">
@@ -96,15 +105,13 @@ const ChatInput = ({
         </div>
       ) : null}
       <div
-        className={`flex flex-row w-full justify-center items-center p-2.5 gap-1 relative ${isMoreThan1Line && "px-4.5"}`}
+        className={`flex flex-row w-full justify-center items-center p-2.5 gap-1 relative ${isExpandedInput && "px-4.5"}`}
       >
-        {!isMoreThan1Line ? (
-          <button
-            className="flex items-center justify-center h-9 w-9 min-w-9 min-h-9 rounded-full bg-transparent hover:bg-gray-100 dark:hover:bg-[#ffffff1a] cursor-pointer self-end border-0 p-0"
-            type="button"
-          >
-            <GoPlus className="w-[24px] h-[24px]" />
-          </button>
+        {!isExpandedInput ? (
+          <FunctionButton
+            ref={functionBtnRef}
+            setSelectedFunction={setSelectedFunction}
+          />
         ) : null}
         <textarea
           ref={textareaRef}
@@ -122,7 +129,7 @@ const ChatInput = ({
         />
 
         <button
-          className={`flex items-center justify-center h-9 w-9 min-w-9 min-h-9 rounded-full bg-black cursor-pointer self-end border-0 p-0 ${isMoreThan1Line ? "hidden" : "block"}`}
+          className={`flex items-center justify-center h-9 w-9 min-w-9 min-h-9 rounded-full bg-black cursor-pointer self-end border-0 p-0 ${isExpandedInput ? "hidden" : "block"}`}
           type="button"
           onClick={isSubmitting ? handleStop : _handleSubmit}
         >
@@ -133,16 +140,29 @@ const ChatInput = ({
           )}
         </button>
       </div>
-      {isMoreThan1Line ? (
-        <div className="flex items-center justify-between p-2.5">
+      {isExpandedInput ? (
+        <div className="flex flex-1 items-center p-2.5">
+          <FunctionButton
+            ref={functionBtnRef}
+            setSelectedFunction={setSelectedFunction}
+          />
+          {!isEmpty(selectedFunction) ? (
+            <button
+              className="flex items-center justify-center py-2 px-1.5 text-sm gap-1 text-blue-500 dark:text-blue-300 hover:bg-blue-50 dark:hover:bg-blue-800 rounded-full cursor-pointer"
+              type="button"
+              onClick={() => {
+                functionBtnRef.current?.onClose();
+                setSelectedFunction(undefined);
+              }}
+            >
+              {selectedFunction.icon}
+              {selectedFunction?.label}
+              <IoCloseOutline className="w-4 h-4" />
+            </button>
+          ) : null}
+
           <button
-            className="flex items-center justify-center h-9 w-9 min-w-9 min-h-9 rounded-full bg-transparent hover:bg-gray-100 dark:hover:bg-[#ffffff1a] cursor-pointer self-end border-0 p-0"
-            type="button"
-          >
-            <GoPlus className="w-[24px] h-[24px]" />
-          </button>
-          <button
-            className="flex items-center justify-center h-9 w-9 min-w-9 min-h-9 rounded-full bg-black cursor-pointer self-end border-0 p-0"
+            className="flex items-center justify-center h-9 w-9 min-w-9 min-h-9 rounded-full bg-black cursor-pointer self-end border-0 p-0 ml-auto"
             type="button"
             onClick={isSubmitting ? handleStop : _handleSubmit}
           >
