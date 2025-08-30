@@ -36,8 +36,6 @@ const ChatInput = ({
 
       textarea.style.height = `${newHeight}px`;
 
-      // Adjust container border radius based on content
-
       const lines = Math.ceil(newHeight / 24); // Approximate line height
 
       setIsMoreThan1Line(lines > 1);
@@ -97,16 +95,21 @@ const ChatInput = ({
           </div>
         </div>
       ) : null}
-      <div className="flex flex-row w-full justify-center items-center p-2.5 gap-1 relative">
-        <button
-          className="flex items-center justify-center h-9 w-9 min-w-9 min-h-9 rounded-full bg-transparent hover:bg-gray-100 dark:hover:bg-[#ffffff1a] cursor-pointer self-end border-0 p-0"
-          type="button"
-        >
-          <GoPlus className="w-[24px] h-[24px]" />
-        </button>
+      <div
+        className={`flex flex-row w-full justify-center items-center p-2.5 gap-1 relative ${isMoreThan1Line && "px-4.5"}`}
+      >
+        {!isMoreThan1Line ? (
+          <button
+            className="flex items-center justify-center h-9 w-9 min-w-9 min-h-9 rounded-full bg-transparent hover:bg-gray-100 dark:hover:bg-[#ffffff1a] cursor-pointer self-end border-0 p-0"
+            type="button"
+          >
+            <GoPlus className="w-[24px] h-[24px]" />
+          </button>
+        ) : null}
         <textarea
           ref={textareaRef}
-          className="w-full focus:outline-none resize-none min-h-[24px] max-h-[200px] overflow-y-auto bg-transparent"
+          className="w-full focus:outline-none resize-none min-h-[24px] max-h-[200px] overflow-y-auto bg-transparent text-base"
+          name="chat input"
           placeholder="Ask anything. Shift + Enter to Submit"
           rows={1}
           style={{
@@ -117,8 +120,9 @@ const ChatInput = ({
           onChange={(e) => setUserMsg(e.target.value)}
           onKeyDown={handleKeyDown}
         />
+
         <button
-          className="flex items-center justify-center h-9 w-9 min-w-9 min-h-9 rounded-full bg-black cursor-pointer self-end border-0 p-0"
+          className={`flex items-center justify-center h-9 w-9 min-w-9 min-h-9 rounded-full bg-black cursor-pointer self-end border-0 p-0 ${isMoreThan1Line ? "hidden" : "block"}`}
           type="button"
           onClick={isSubmitting ? handleStop : _handleSubmit}
         >
@@ -129,6 +133,27 @@ const ChatInput = ({
           )}
         </button>
       </div>
+      {isMoreThan1Line ? (
+        <div className="flex items-center justify-between p-2.5">
+          <button
+            className="flex items-center justify-center h-9 w-9 min-w-9 min-h-9 rounded-full bg-transparent hover:bg-gray-100 dark:hover:bg-[#ffffff1a] cursor-pointer self-end border-0 p-0"
+            type="button"
+          >
+            <GoPlus className="w-[24px] h-[24px]" />
+          </button>
+          <button
+            className="flex items-center justify-center h-9 w-9 min-w-9 min-h-9 rounded-full bg-black cursor-pointer self-end border-0 p-0"
+            type="button"
+            onClick={isSubmitting ? handleStop : _handleSubmit}
+          >
+            {isSubmitting ? (
+              <IoStop className="text-white w-[20px] h-[20px] animate-pulse" />
+            ) : (
+              <IoArrowUpOutline className="text-white w-[20px] h-[20px]" />
+            )}
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 };
