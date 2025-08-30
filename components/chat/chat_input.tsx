@@ -123,15 +123,21 @@ const ChatInput = ({
       <div
         className={`flex flex-row w-full justify-center items-center p-2.5 gap-1 relative ${isExpandedInput && "px-4.5"}`}
       >
-        {!isExpandedInput ? (
-          <FunctionButton
-            ref={functionBtnRef}
-            setSelectedFunction={setSelectedFunction}
-          />
-        ) : null}
+        <div
+          className={`transition-all duration-300 ease-in-out flex-shrink-0 ${
+            isExpandedInput ? "w-0 opacity-0" : "w-9 opacity-100"
+          }`}
+        >
+          {!isExpandedInput ? (
+            <FunctionButton
+              ref={functionBtnRef}
+              setSelectedFunction={setSelectedFunction}
+            />
+          ) : null}
+        </div>
         <textarea
           ref={textareaRef}
-          className="w-full focus:outline-none resize-none min-h-[24px] max-h-[200px] overflow-y-auto bg-transparent text-base"
+          className="w-full focus:outline-none resize-none min-h-[24px] max-h-[200px] overflow-y-auto bg-transparent text-base transition-all duration-300 ease-in-out"
           name="chat input"
           placeholder="Ask anything. Shift + Enter to Submit"
           rows={1}
