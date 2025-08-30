@@ -40,11 +40,20 @@ const ChatInput = ({
       // Set height to scrollHeight to fit content
       const newHeight = Math.min(textarea.scrollHeight, 200);
 
-      textarea.style.height = `${newHeight}px`;
+      // Check the case if user type a long text to break line
+      textarea.style.height =
+        newHeight === 48 &&
+        !isMoreThan1Line &&
+        !userMsg.includes("\n") &&
+        !userMsg.includes("\r")
+          ? `24px`
+          : `${newHeight}px`;
 
       const lines = Math.ceil(newHeight / 24); // Approximate line height
 
-      setIsMoreThan1Line(lines > 1);
+      if (!isMoreThan1Line) {
+        setIsMoreThan1Line(lines > 1);
+      }
     }
   };
 
@@ -61,6 +70,9 @@ const ChatInput = ({
   // Auto-resize when userMsg changes
   useEffect(() => {
     adjustTextareaHeight();
+    if (!userMsg) {
+      setIsMoreThan1Line(false);
+    }
   }, [userMsg, newThreadMsg]);
 
   const _handleSubmit = () => {
