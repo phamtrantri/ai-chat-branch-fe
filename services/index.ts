@@ -16,54 +16,30 @@ export const createConversation = async (
 };
 
 export const getAllConversations = async () => {
-  // const res = await fetch("http://localhost:8000/conversations/v1/getAll", {
-  //   method: "POST",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //   },
-  // });
-  // const data = await res.json();
-
-  // return await data.data.conversations;
-
-  return [
-    {
-      id: 1,
-      name: "test",
+  const res = await fetch("http://localhost:8000/conversations/v1/getAll", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
     },
-  ];
+  });
+  const data = await res.json();
+
+  return await data.data.conversations;
 };
 
 export const getConversationDetails = async (id: number) => {
-  // const res = await fetch("http://localhost:8000/conversations/v1/getDetails", {
-  //   method: "POST",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //   },
-  //   body: JSON.stringify({
-  //     id,
-  //   }),
-  // });
+  const res = await fetch("http://localhost:8000/conversations/v1/getDetails", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      id,
+    }),
+  });
+  const data = await res.json();
 
-  // const data = await res.json();
-
-  // return data.data;
-
-  return {
-    path: [],
-    messages: [
-      {
-        id: 1,
-        content: "test",
-        role: "user",
-      },
-      {
-        id: 2,
-        content: "test2",
-        role: "assistant",
-      },
-    ],
-  };
+  return data.data;
 };
 
 export const createStreamedMessage = async (

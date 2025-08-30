@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from "react";
+import { GoPlus } from "react-icons/go";
 import { IoArrowUpOutline, IoStop, IoCloseOutline } from "react-icons/io5";
 
 interface IChatInputProps {
@@ -21,10 +22,10 @@ const ChatInput = ({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [userMsg, setUserMsg] = useState("");
+  const [isMoreThan1Line, setIsMoreThan1Line] = useState(false);
 
   const adjustTextareaHeight = () => {
     const textarea = textareaRef.current;
-    const container = containerRef.current;
 
     if (textarea) {
       // Reset height to auto to get the correct scrollHeight
@@ -36,15 +37,10 @@ const ChatInput = ({
       textarea.style.height = `${newHeight}px`;
 
       // Adjust container border radius based on content
-      if (container) {
-        const lines = Math.ceil(newHeight / 24); // Approximate line height
 
-        if (lines > 1 || !!newThreadMsg) {
-          container.style.borderRadius = "16px";
-        } else {
-          container.style.borderRadius = "28px";
-        }
-      }
+      const lines = Math.ceil(newHeight / 24); // Approximate line height
+
+      setIsMoreThan1Line(lines > 1);
     }
   };
 
@@ -81,7 +77,9 @@ const ChatInput = ({
       ref={containerRef}
       className={`flex flex-col w-full border-1 border-default-300 bg-white dark:bg-[#323232D9] dark:border-[#323232D9]
         shadow-md transition-[border-radius] duration-150 ease-out ${customClassName}`}
-      style={{ borderRadius: "28px" }}
+      style={{
+        borderRadius: isMoreThan1Line || !!newThreadMsg ? "16px" : "28px",
+      }}
     >
       {!!newThreadMsg ? (
         <div className="w-full">
@@ -99,7 +97,13 @@ const ChatInput = ({
           </div>
         </div>
       ) : null}
-      <div className="flex flex-row w-full justify-center items-center p-2.5">
+      <div className="flex flex-row w-full justify-center items-center p-2.5 gap-1 relative">
+        <button
+          className="flex items-center justify-center h-9 w-9 min-w-9 min-h-9 rounded-full bg-transparent hover:bg-gray-100 dark:hover:bg-[#ffffff1a] cursor-pointer self-end border-0 p-0"
+          type="button"
+        >
+          <GoPlus className="w-[24px] h-[24px]" />
+        </button>
         <textarea
           ref={textareaRef}
           className="w-full focus:outline-none resize-none min-h-[24px] max-h-[200px] overflow-y-auto bg-transparent"
