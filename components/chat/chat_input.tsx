@@ -37,6 +37,10 @@ const ChatInput = ({
       // Reset height to auto to get the correct scrollHeight
       textarea.style.height = "auto";
 
+      if (textarea.scrollHeight >= 200) {
+        textarea.style.overflowY = "auto";
+      }
+
       // Set height to scrollHeight to fit content
       const newHeight = Math.min(textarea.scrollHeight, 200);
 
