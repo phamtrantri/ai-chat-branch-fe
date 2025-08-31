@@ -260,7 +260,7 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
       </div>
       <div className="absolute inset-x-0 bottom-5 z-10 flex flex-col items-center justify-center w-full px-2 gap-5">
         <button
-          className="bg-white dark:bg-[#212121e6] border-1 border-gray-300 flex items-center justify-center h-9 w-9 min-w-9 min-h-9 rounded-full cursor-pointer p-0
+          className="bg-white dark:bg-[#212121e6] border-1 border-gray-300 dark:border-gray-600 flex items-center justify-center h-9 w-9 min-w-9 min-h-9 rounded-full cursor-pointer p-0
             transition-[opacity] duration-200"
           style={{ opacity: !isAtBottom ? "100" : "0" }}
           type="button"

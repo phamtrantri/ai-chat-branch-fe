@@ -12,7 +12,12 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <HeroUIProvider navigate={router.push}>
-      <NextThemesProvider enableSystem attribute="class" defaultTheme="dark">
+      <NextThemesProvider
+        enableSystem
+        attribute="class"
+        defaultTheme="dark"
+        forcedTheme="dark"
+      >
         <Component {...pageProps} />
       </NextThemesProvider>
     </HeroUIProvider>
