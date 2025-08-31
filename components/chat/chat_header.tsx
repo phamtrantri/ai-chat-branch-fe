@@ -38,7 +38,7 @@ const ChatHeader: React.FC<IProps> = ({ path, conversations }) => {
   };
 
   return (
-    <div className="dark:bg-[#212121e6] dark:border-[#181818] relative flex w-full flex-row items-center justify-between p-4 border-b-1 border-gray-200">
+    <div className="h-[75px] dark:bg-[#212121e6] dark:border-[#181818] relative flex w-full flex-row items-center justify-between p-4 border-b-1 border-gray-200">
       <div className="flex flex-col items-start gap-1 sm:gap-0.5 flex-1">
         <div className="flex gap-2 items-center text-base font-medium">
           <HiMenuAlt2

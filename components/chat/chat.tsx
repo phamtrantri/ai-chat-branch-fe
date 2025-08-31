@@ -1,6 +1,7 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { Spinner } from "@heroui/spinner";
+import { IoArrowDownOutline } from "react-icons/io5";
 
 import ChatInput from "./chat_input";
 import ChatbotMsg from "./chatbot_msg";
@@ -24,6 +25,16 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
   const [streamedText, setStreamedText] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [newThreadMsg, setNewThreadMsg] = useState<any>();
+  const [scrollPosition, setScrollPosition] = useState<number>(0);
+
+  const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
+    const scrollContainer = scrollContainerRef.current;
+
+    scrollContainer?.scrollTo({
+      top: scrollContainer.scrollHeight,
+      behavior: behavior,
+    });
+  };
 
   const cancelStream = () => {
     if (readerRef.current) {
@@ -88,7 +99,6 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
           setStreamedText(fullContent + "|");
         }
         done = streamDone;
-        scrollToBottom();
       }
     } catch (error) {
       if (error instanceof Error && error.name === "AbortError") {
@@ -118,15 +128,6 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
     }
   };
 
-  const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
-    const scrollContainer = scrollContainerRef.current;
-
-    scrollContainer?.scrollTo({
-      top: scrollContainer.scrollHeight,
-      behavior: behavior,
-    });
-  };
-
   useLayoutEffect(() => {
     if (scrollContainerRef.current) {
       scrollContainerRef.current.style.visibility = "hidden";
@@ -147,7 +148,9 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
     if (newThreadMsg) {
       return;
     }
-    scrollToBottom();
+    if (isSubmitting) {
+      scrollToBottom();
+    }
   }, [messages, isSubmitting]);
 
   // Cleanup effect to cancel any ongoing streams when component unmounts
@@ -199,12 +202,22 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
     setNewThreadMsg(undefined);
   };
 
+  const isAtBottom =
+    Math.ceil(
+      (scrollPosition || 0) +
+        (scrollContainerRef.current?.clientHeight || 0) +
+        20 // buffer
+    ) >= (scrollContainerRef.current?.scrollHeight || 0);
+
   return (
     <div className="dark:bg-[#212121e6] relative flex h-full max-w-full flex-1 flex-col gap-3 px-2 py-4 overflow-hidden shrink-0">
       <div
         ref={scrollContainerRef}
         className="relative flex flex-col h-full w-full overflow-y-auto mb-10"
         style={{ visibility: "hidden" }}
+        onScroll={() => {
+          setScrollPosition(scrollContainerRef.current?.scrollTop || 0);
+        }}
       >
         <div className="relative flex flex-col gap-10 h-full max-w-200 w-full mx-auto">
           {[...history, ...messages].map((msg) => {
@@ -234,10 +247,28 @@ const Chat: React.FC<{ history: Array<any> }> = ({ history = [] }) => {
               ) : null}
             </div>
           ) : null}
-          <div className="h-50 invisible">placeholder</div>
+          <div
+            className={`invisible h-50`}
+            // minus header and chat input
+            style={
+              isSubmitting ? { minHeight: "calc(100svh - 75px - 225px" } : {}
+            }
+          >
+            placeholder
+          </div>
         </div>
       </div>
-      <div className="absolute inset-x-0 bottom-5 z-10 flex justify-center w-full px-2">
+      <div className="absolute inset-x-0 bottom-5 z-10 flex flex-col items-center justify-center w-full px-2 gap-5">
+        <button
+          className="bg-white dark:bg-[#212121e6] border-1 border-gray-300 flex items-center justify-center h-9 w-9 min-w-9 min-h-9 rounded-full cursor-pointer p-0
+            transition-[opacity] duration-200"
+          style={{ opacity: !isAtBottom ? "100" : "0" }}
+          type="button"
+          onClick={() => scrollToBottom()}
+        >
+          <IoArrowDownOutline className="w-[20px] h-[20px]" />
+        </button>
+
         <div className="w-full px-2 max-w-200">
           <ChatInput
             customClassName="w-full"
